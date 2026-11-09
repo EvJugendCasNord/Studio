@@ -14,7 +14,10 @@ Modulare Vite-Webanwendung (Fabric.js, jsPDF) für das Jugendteam. Projekte werd
 4. Unter **Actions** den Lauf „Deploy“ abwarten. Der Link steht danach unter Settings → Pages.
 
 ## Logo
-Die Datei `src/assets/logo.svg` ersetzen (am besten SVG oder PNG mit transparentem Hintergrund; bei PNG den Dateinamen in `src/css/style.css` bei `.logo` anpassen). Das Logo wird per CSS-Maske in #EC4899 eingefärbt, die Form bleibt unverändert. Aktuell liegt dort nur ein neutraler Platzhalter.
+Das Jugendlogo liegt in `src/assets/` (`logo.png` als Maske, `logo-pink.png` in #EC4899). Es wird im Dashboard, im Editor und über den Button „Jugendlogo einfügen“ in Designs verwendet. Zum Austauschen beide Dateien ersetzen (transparenter Hintergrund).
+
+## Wichtig
+Die Seite funktioniert nicht per Doppelklick auf `index.html` (dann bleibt sie leer). Sie läuft über `npm run dev` oder nach dem Deploy auf GitHub Pages.
 
 ## Stand / Noch nicht enthalten
 Vorlagenbibliothek, Elementbibliothek (Sticker, Pfeile, Rahmen, Social-Icons), eigene Medienbibliothek, Farbpaletten und Favoritenfarben, Bild-Zuschnitt, Raster, geschützter Teamzugang (z. B. Supabase). Schriftstärken: Normal und Fett. Der Build wurde noch nicht ausgeführt.

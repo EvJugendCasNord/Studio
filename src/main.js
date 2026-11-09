@@ -5,7 +5,7 @@ import {dbAll,dbPut,dbDel} from './js/db.js';
 import {initFonts} from './js/fonts.js';
 import {openEditor} from './editor/editor.js';
 initFonts();
-$('#fmts').innerHTML=FORMATS.map((f,i)=>`<div class="card" data-i="${i}"><b>${f.n}</b><small>${f.w} × ${f.h} px${f.pages?' · '+f.pages+' Seiten':''}</small></div>`).join('');
+$('#fmts').innerHTML=FORMATS.map((f,i)=>`<div class="card fc" data-i="${i}"><div class="ar" style="aspect-ratio:${f.w}/${f.h}"></div><b>${f.n}</b><small>${f.w} × ${f.h} px${f.pages?' · '+f.pages+' Seiten':''}</small></div>`).join('');
 $('#fmts').onclick=e=>{const c=e.target.closest('.card');if(!c)return;const f=FORMATS[c.dataset.i];openEditor({id:'p'+Date.now(),name:f.n,w:f.w,h:f.h,pages:Array(f.pages||1).fill(null),fav:false},loadProjs)};
 async function loadProjs(){let a=[];try{a=await dbAll()}catch(e){console.error(e)}
  const q=$('#q').value.toLowerCase();a=a.filter(p=>p.name.toLowerCase().includes(q)).sort((x,y)=>(y.fav|0)-(x.fav|0)||y.upd-x.upd);
@@ -19,3 +19,5 @@ $('#projs').onclick=async e=>{const c=e.target.closest('.card');if(!c)return;con
  if(a==='del'&&confirm('Projekt wirklich löschen?'))await dbDel(p.id);
  loadProjs()};
 loadProjs();
+
+$('#goNew').onclick=()=>$('#fmts').scrollIntoView({behavior:'smooth'});$('#goProj').onclick=()=>$('#projs').scrollIntoView({behavior:'smooth'});

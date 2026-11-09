@@ -1,4 +1,5 @@
 import {fabric} from 'fabric';
+import logoUrl from '../assets/logo-pink.png';
 import {$,BLANK} from '../js/util.js';
 import {dbPut} from '../js/db.js';
 import {loadFont,openFonts} from '../js/fonts.js';
@@ -75,3 +76,4 @@ const ex=async f=>{try{cv.discardActiveObject();flush();await f(proj,$('#name').
 const sc=()=>+$('#sc').value;
 $('#exPng').onclick=()=>ex((p,n)=>exportPage(p,cur,'png',sc(),n));$('#exJpg').onclick=()=>ex((p,n)=>exportPage(p,cur,'jpeg',sc(),n));
 $('#exAll').onclick=()=>ex((p,n)=>exportAll(p,'png',sc(),n));$('#exPdf').onclick=()=>ex((p,n)=>exportPdf(p,sc(),n));
+$('#aLogo').onclick=async()=>{try{const b=await (await fetch(logoUrl)).blob(),r=new FileReader();r.onload=()=>fabric.Image.fromURL(r.result,im=>{im.scaleToWidth(W*.25);im.set(mid());add(im)});r.readAsDataURL(b)}catch(x){alert('Logo konnte nicht geladen werden.')}};
