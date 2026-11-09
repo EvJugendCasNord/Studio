@@ -1,5 +1,4 @@
-import {fabric} from 'fabric';
-import logoUrl from '../assets/logo-pink.png';
+const fabric=window.fabric,logoUrl=new URL('../assets/logo-pink.png',import.meta.url).href;
 import {$,BLANK} from '../js/util.js';
 import {dbPut} from '../js/db.js';
 import {loadFont,openFonts} from '../js/fonts.js';

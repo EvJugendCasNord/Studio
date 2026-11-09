@@ -1,4 +1,3 @@
-import './css/style.css';
 import {$} from './js/util.js';
 import {FORMATS} from './js/data.js';
 import {dbAll,dbPut,dbDel} from './js/db.js';

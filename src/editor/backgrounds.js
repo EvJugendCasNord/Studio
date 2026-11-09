@@ -1,4 +1,4 @@
-import {fabric} from 'fabric';
+const fabric=window.fabric;
 const G={'Pink':'Bonbon F9A8D4 EC4899,Flamingo FB7185 EC4899,Magenta EC4899 9D174D,Rosé FBCFE8 F472B6,Sunset FB923C EC4899',
 'Pink-Violett':'Dream EC4899 A78BFA,Orchid F472B6 7C3AED,Berry BE185D 6D28D9,Aurora F9A8D4 A78BFA,Plum DB2777 4C1D95',
 'Blau':'Ocean 3B82F6 06B6D4,Sky 93C5FD 3B82F6,Blau-Lila 3B82F6 A78BFA,Deep 1D4ED8 1E1B4B,Ice BAE6FD 818CF8',

@@ -1,5 +1,4 @@
-import {fabric} from 'fabric';
-import {jsPDF} from 'jspdf';
+const fabric=window.fabric,{jsPDF}=window.jspdf;
 import {loadFont} from '../js/fonts.js';
 import {BLANK,download} from '../js/util.js';
 async function render(json,W,H,fmt,scale){json=json||BLANK;
