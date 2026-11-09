@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Youth Creator Studio</title></head><body>
+<div id="dash"><div class="brand"><i class="logo"></i><h1>Youth <span>Creator</span> Studio</h1></div>
+<p class="mut">Willkommen! Was möchtet ihr heute gestalten?</p><input id="q" placeholder="Projekte suchen…" style="width:100%;max-width:340px">
+<h2>Neues Design</h2><div class="grid" id="fmts"></div><h2>Meine Projekte</h2><div class="grid" id="projs"></div>
+<p class="mut small" style="margin-top:30px">Demo-Modus: Projekte liegen nur lokal in diesem Browser. Geschützter Teamzugang ist noch nicht eingerichtet.</p></div>
+<div id="ed"><div id="top"><button id="back">← Dashboard</button><i class="logo" style="width:26px;height:26px"></i><input id="name" style="width:150px">
+<button id="undo">↶</button><button id="redo">↷</button><input id="zoom" type="range" min="10" max="100" value="40" style="width:90px"><button id="guideBtn" class="hide">Hilfslinien</button><span style="flex:1"></span>
+<select id="sc"><option value="1">1×</option><option value="2">2×</option></select><button id="exPng" class="p">PNG</button><button id="exJpg" class="p">JPG</button><button id="exAll" class="p">Alle PNG</button><button id="exPdf" class="p">PDF</button></div>
+<div id="main"><div id="left"><button id="aText">T Text</button><button id="aRect">▭ Rechteck</button><button id="aCirc">● Kreis</button><button id="aTri">▲ Dreieck</button><button id="aStar">★ Stern</button><button id="aLine">— Linie</button>
+<button id="aImg">🖼 Bild hochladen</button><input type="file" id="file" accept="image/png,image/jpeg,image/webp" class="hide"><button id="openFonts">Aa Schriftarten</button>
+<h2>Hintergründe</h2><select id="bgCat" style="width:100%;margin-bottom:8px"></select><div class="sw" id="bgs"></div><input type="color" id="bgc" value="#111018" style="width:100%"></div>
+<div id="center"><div id="stage"><div id="wrap"></div></div><div id="pages"></div></div>
+<div id="right"><div id="props" class="hide"><label>Farbe</label><input type="color" id="fill"><label>Transparenz</label><input type="range" id="op" min="0" max="1" step=".05" value="1">
+<div id="tp"><label>Schrift</label><button id="fontBtn" style="width:100%">Schrift</button><label>Größe</label><input type="number" id="fs" min="8" max="600">
+<div class="row"><button id="al">⇤</button><button id="ac">↔</button><button id="ar">⇥</button></div><label>Buchstabenabstand</label><input type="range" id="ls" min="-100" max="800" value="0"><label>Zeilenabstand</label><input type="range" id="lh" min=".8" max="3" step=".05" value="1.16"></div>
+<div class="row"><button id="dup">Duplizieren</button><button id="del">Löschen</button><button id="fw">Nach vorn</button><button id="bw">Nach hinten</button><button id="lock">Sperren</button><button id="grp">Gruppe</button><button id="ctr">Zentrieren</button></div></div>
+<p id="hint" class="mut small">Element anklicken zum Bearbeiten. Entf löscht, Strg+Z/C/V.</p></div></div></div>
+<div id="fontPanel" class="hide"><div><div class="row" style="margin:0"><input id="fs1" placeholder="Schrift suchen…" style="flex:1"><select id="fc"></select><select id="fw1"><option value="400">Normal</option><option value="700">Fett</option></select><button id="fx">✕</button></div>
+<div class="row" style="margin:0"><input id="fp" value="Gott liebt dich 123" style="flex:1"><button id="ff">★ Favoriten</button></div><div id="fl"></div></div></div>
+<script type="module" src="/src/main.js"></script></body></html>
