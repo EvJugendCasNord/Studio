@@ -4,9 +4,10 @@ import {dbPut} from '../js/db.js';
 import {loadFont,openFonts} from '../js/fonts.js';
 import {BGS,BG_CATS,applyBg} from './backgrounds.js';
 import {exportPage,exportAll,exportPdf} from './export.js';
+const PROPS=['frame','logoSrc','logoHex'];
 let cv,W,H,Z=.4,proj,cur=0,hist=[],pos=-1,busy=false,st,back,clip;
-const A=()=>cv&&cv.getActiveObject(),isT=o=>o&&o.type==='i-text';
-const pages=()=>proj.pages,flush=()=>{pages()[cur]=cv.toJSON()};
+const A=()=>cv&&cv.getActiveObject(),isT=o=>o&&(o.type==='i-text'||o.type==='textbox');
+const pages=()=>proj.pages,flush=()=>{pages()[cur]=cv.toJSON(PROPS)};
 export function openEditor(p,onBack){proj=p;W=p.w;H=p.h;back=onBack;
  $('#dash').style.display='none';$('#ed').style.display='flex';$('#name').value=p.name;
  if(cv)try{cv.dispose()}catch(e){}
@@ -20,8 +21,8 @@ export function openEditor(p,onBack){proj=p;W=p.w;H=p.h;back=onBack;
 function setZ(){cv.setZoom(Z);cv.setDimensions({width:W*Z,height:H*Z})}
 async function load(i,store=true){if(store)flush();cur=i;busy=true;const j=pages()[i]||BLANK;
  await Promise.all([...new Set((j.objects||[]).map(o=>o.fontFamily).filter(Boolean))].map(loadFont));
- cv.loadFromJSON(j,()=>{cv.getObjects().forEach(o=>o.initDimensions&&o.initDimensions());cv.renderAll();busy=false;hist=[JSON.stringify(cv.toJSON())];pos=0;sel();bar()})}
-function snap(){if(busy)return;hist=hist.slice(0,pos+1);hist.push(JSON.stringify(cv.toJSON()));pos=hist.length-1;clearTimeout(st);st=setTimeout(save,800)}
+ cv.loadFromJSON(j,()=>{cv.getObjects().forEach(o=>o.initDimensions&&o.initDimensions());cv.renderAll();busy=false;hist=[JSON.stringify(cv.toJSON(PROPS))];pos=0;sel();bar()})}
+function snap(){if(busy)return;hist=hist.slice(0,pos+1);hist.push(JSON.stringify(cv.toJSON(PROPS)));pos=hist.length-1;clearTimeout(st);st=setTimeout(save,800)}
 function restore(){busy=true;cv.loadFromJSON(hist[pos],()=>{cv.renderAll();busy=false;sel();clearTimeout(st);st=setTimeout(save,800)})}
 async function save(){try{flush();proj.name=$('#name').value||'Unbenannt';await dbPut({...proj,upd:Date.now(),thumb:cv.toDataURL({format:'jpeg',quality:.5,multiplier:160/(W*Z)})})}catch(e){console.error('Speichern fehlgeschlagen',e)}}
 function bar(){const b=$('#pages');b.innerHTML=pages().map((_,i)=>`<button data-i="${i}" class="${i===cur?'on':''}">Seite ${i+1}</button>`).join('')+'<button data-a="add">+ Neu</button><button data-a="dup">Duplizieren</button><button data-a="del">Löschen</button><button data-a="l">◀</button><button data-a="r">▶</button>'}
@@ -37,21 +38,13 @@ $('#guideBtn').onclick=()=>{const g=$('#guide');g.style.display=g.style.display=
 $('#undo').onclick=()=>{if(pos>0){pos--;restore()}};$('#redo').onclick=()=>{if(pos<hist.length-1){pos++;restore()}};
 $('#name').onchange=save;$('#back').onclick=async()=>{await save();$('#ed').style.display='none';$('#dash').style.display='block';back()};
 const add=o=>{cv.add(o);cv.setActiveObject(o);cv.renderAll()},mid=()=>({left:W/2,top:H/2,originX:'center',originY:'center'});
-$('#aText').onclick=()=>addText('Inter','700');
-function addText(f,w){loadFont(f).then(()=>add(new fabric.IText('Dein Text',{...mid(),fontSize:Math.round(W/9),fill:'#ffffff',fontFamily:f,fontWeight:w})))}
-$('#aRect').onclick=()=>add(new fabric.Rect({...mid(),width:W/3,height:W/3,fill:'#EC4899',rx:24,ry:24}));
-$('#aCirc').onclick=()=>add(new fabric.Circle({...mid(),radius:W/6,fill:'#A78BFA'}));
-$('#aTri').onclick=()=>add(new fabric.Triangle({...mid(),width:W/3,height:W/3,fill:'#F9A8D4'}));
-$('#aLine').onclick=()=>add(new fabric.Rect({...mid(),width:W/2,height:8,fill:'#ffffff'}));
-$('#aStar').onclick=()=>{const R=W/6,pts=[];for(let i=0;i<10;i++){const a=Math.PI*i/5-Math.PI/2,d=i%2?R/2.5:R;pts.push({x:Math.cos(a)*d,y:Math.sin(a)*d})}add(new fabric.Polygon(pts,{...mid(),fill:'#FDE68A'}))};
-$('#aImg').onclick=()=>$('#file').click();
-$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>fabric.Image.fromURL(r.result,im=>{im.scaleToWidth(Math.min(W*.8,im.width));im.set(mid());add(im)});r.onerror=()=>alert('Bild konnte nicht gelesen werden.');r.readAsDataURL(f);e.target.value=''};
+function addText(f,w,size,txt){loadFont(f).then(()=>add(new fabric.Textbox(txt||'Dein Text',{...mid(),width:W*.8,fontSize:Math.round(size||W/9),fill:'#ffffff',fontFamily:f,fontWeight:w,textAlign:'center'})))}
 $('#bgCat').innerHTML=BG_CATS.map(c=>`<option>${c}</option>`).join('');
 const bgs=()=>{$('#bgs').innerHTML=BGS.map((b,i)=>b.cat===$('#bgCat').value?`<b data-i="${i}" title="${b.n}" style="background:${b.css}"></b>`:'').join('')};bgs();$('#bgCat').onchange=bgs;
 $('#bgs').onclick=async e=>{const i=e.target.dataset.i;if(i==null)return;await applyBg(cv,W,H,BGS[i].s);snap()};
 $('#bgc').oninput=e=>{cv.setBackgroundColor(e.target.value,()=>cv.renderAll())};$('#bgc').onchange=snap;
 function sel(){const o=A();$('#props').classList.toggle('hide',!o);$('#hint').classList.toggle('hide',!!o);if(!o)return;
- $('#tp').classList.toggle('hide',!isT(o));$('#op').value=o.opacity;if(typeof o.fill==='string'&&/^#[0-9a-f]{6}$/i.test(o.fill))$('#fill').value=o.fill;
+ $('#tp').classList.toggle('hide',!isT(o));$('#rmbg').classList.toggle('hide',o.type!=='image');$('#op').value=o.opacity;if(typeof o.fill==='string'&&/^#[0-9a-f]{6}$/i.test(o.fill))$('#fill').value=o.fill;
  if(isT(o)){$('#fontBtn').textContent=o.fontFamily;$('#fs').value=Math.round(o.fontSize);$('#ls').value=o.charSpacing;$('#lh').value=o.lineHeight}
  $('#lock').textContent=o.lockMovementX?'Entsperren':'Sperren'}
 const set=(k,v,c)=>{const o=A();if(!o)return;o.set(k,v);cv.renderAll();if(c)snap()};
@@ -59,7 +52,7 @@ $('#fill').oninput=e=>set('fill',e.target.value);$('#fill').onchange=snap;$('#op
 $('#fs').onchange=e=>set('fontSize',+e.target.value,true);$('#ls').oninput=e=>set('charSpacing',+e.target.value);$('#ls').onchange=snap;$('#lh').oninput=e=>set('lineHeight',+e.target.value);$('#lh').onchange=snap;
 $('#al').onclick=()=>set('textAlign','left',true);$('#ac').onclick=()=>set('textAlign','center',true);$('#ar').onclick=()=>set('textAlign','right',true);
 const pick=async(n,w)=>{const o=A();if(!isT(o))return addText(n,w);await loadFont(n);o.set({fontFamily:n,fontWeight:w});o.initDimensions();cv.renderAll();sel();snap()};
-$('#fontBtn').onclick=()=>openFonts(pick);$('#openFonts').onclick=()=>openFonts(pick);
+$('#fontBtn').onclick=()=>openFonts(pick);
 const del=()=>{const o=A();if(!o||o.isEditing)return;cv.getActiveObjects().forEach(x=>cv.remove(x));cv.discardActiveObject();cv.renderAll()};$('#del').onclick=del;
 const dup=()=>{const o=A();if(o)o.clone(c=>{c.set({left:o.left+30,top:o.top+30});cv.add(c);cv.setActiveObject(c)})};$('#dup').onclick=dup;
 $('#fw').onclick=()=>{const o=A();if(o){cv.bringForward(o);snap()}};$('#bw').onclick=()=>{const o=A();if(o){cv.sendBackwards(o);snap()}};
@@ -75,4 +68,5 @@ const ex=async f=>{try{cv.discardActiveObject();flush();await f(proj,$('#name').
 const sc=()=>+$('#sc').value;
 $('#exPng').onclick=()=>ex((p,n)=>exportPage(p,cur,'png',sc(),n));$('#exJpg').onclick=()=>ex((p,n)=>exportPage(p,cur,'jpeg',sc(),n));
 $('#exAll').onclick=()=>ex((p,n)=>exportAll(p,'png',sc(),n));$('#exPdf').onclick=()=>ex((p,n)=>exportPdf(p,sc(),n));
-$('#aLogo').onclick=async()=>{try{const b=await (await fetch(logoUrl)).blob(),r=new FileReader();r.onload=()=>fabric.Image.fromURL(r.result,im=>{im.scaleToWidth(W*.25);im.set(mid());add(im)});r.readAsDataURL(b)}catch(x){alert('Logo konnte nicht geladen werden.')}};
+
+export const api={get cv(){return cv},get W(){return W},get H(){return H},add,mid,snap,A,addText,pick};

@@ -3,6 +3,7 @@ import {FORMATS} from './js/data.js';
 import {dbAll,dbPut,dbDel} from './js/db.js';
 import {initFonts} from './js/fonts.js';
 import {openEditor} from './editor/editor.js';
+import './editor/panels.js';
 initFonts();
 $('#fmts').innerHTML=FORMATS.map((f,i)=>`<div class="card fc" data-i="${i}"><div class="ar" style="aspect-ratio:${f.w}/${f.h}"></div><b>${f.n}</b><small>${f.w} × ${f.h} px${f.pages?' · '+f.pages+' Seiten':''}</small></div>`).join('');
 $('#fmts').onclick=e=>{const c=e.target.closest('.card');if(!c)return;const f=FORMATS[c.dataset.i];openEditor({id:'p'+Date.now(),name:f.n,w:f.w,h:f.h,pages:Array(f.pages||1).fill(null),fav:false},loadProjs)};
